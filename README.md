@@ -30,7 +30,6 @@ Cheers! 🍻
 ### Each new build includes:
 - Fresh built from source ISO each run
 - Automatic Virtual Machine Activation
-- 
 - Pre-Configured for use with
   - [Ansible](https://github.com/ansible/ansible)
 - Lightning fast deploy on modern hardware
@@ -63,17 +62,14 @@ Cheers! 🍻
 _A few moments later_
 
 ```
-[175045713] - 07/07/2022 21:04:17 - Build Start
-[175045713] - 07/07/2022 21:04:17 - Finding Answers
-[175045713] - 07/07/2022 21:04:17 - Mixing TestServer with Windows Server 2022 Datacenter Evaluation
-[175045713] - 07/07/2022 21:06:18 - Setting up TestServer
-[175045713] - 07/07/2022 21:06:21 - Enabling Ansible Management on TestServer
-[175045713] - 07/07/2022 21:06:30 - Converting Windows Server Evaluation to Full
-[175045713] - 07/07/2022 21:06:55 - Setting AVMA Key on TestServer
-[175045713] - 07/07/2022 21:07:03 - TestServer is now ready
-[175045713] - 07/07/2022 21:07:03 - Credentials: Administrator\>C5kno'(*Q@MN|?j/4`VcUZF
-[175045713] - 07/07/2022 21:07:03 - Build End
-[175045713] - 07/07/2022 21:07:03 - Completed in 2 Minutes
+[921043386] - 07/07/2022 22:02:24 - Build Start
+[921043386] - 07/07/2022 22:02:24 - Brewing Server01 with Windows Server 2022 Datacenter Evaluation
+[921043386] - 07/07/2022 22:04:21 - Setting up Server01
+[921043386] - 07/07/2022 22:04:24 - Enabling Ansible Management on Server01
+[921043386] - 07/07/2022 22:04:33 - Converting Windows Server Evaluation to Full
+[921043386] - 07/07/2022 22:04:58 - Setting AVMA Key on Server01
+[921043386] - 07/07/2022 22:05:07 - Credentials: Administrator\C^_4aH$qr%J[S0`}\jNO.ox"
+[921043386] - 07/07/2022 22:05:07 - Server01 is now ready
 ```
 
 ---
@@ -81,4 +77,4 @@ _A few moments later_
 ### Further Notes
 
 * [1] Tested on NUC7i7BNH with NVMe Storage
-* Microsoft [Virtualization-Documentation](https://github.com/MicrosoftDocs/Virtualization-Documentation)
+* Microsoft [Virtualization-Documentation](https://docs.microsoft.com/en-us/virtualization/)

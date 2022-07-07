@@ -74,11 +74,7 @@ $Credential = New-Object System.Management.Automation.PSCredential($UserName, $P
 
 # START BUILD
 
-# Start Time
-$StartTime = Get-Date
-
 Write-Host "[$BuildID] - $(Get-date) - Build Start" -ForegroundColor Green
-Write-Host "[$BuildID] - $(Get-date) - Finding Answers" -ForegroundColor Yellow
 
 # Create Answer File
 $UnattendTemplate = @'
@@ -146,7 +142,7 @@ $xml.Save($writer)
 $writer.Dispose()
 
 # Create VHDX from ISO
-Write-Host "[$BuildID] - $(Get-date) - Mixing $Name with $WindowsEdition" -ForegroundColor Yellow
+Write-Host "[$BuildID] - $(Get-date) - Brewing $Name with $WindowsEdition" -ForegroundColor Yellow
 
 # Import Convert-WindowsImage.ps1 function for use
 . .\Convert-WindowsImage.ps1
@@ -224,16 +220,8 @@ Invoke-Command -Session $FinalSession -ScriptBlock {
 # Waiting for Heartbeat prior to finish
 Wait-VM -Name $Name -For Heartbeat
 
-# END CONFIG
-
-## End Time
-$EndTime = Get-Date
-$TotalTime = (New-TimeSpan -Start $StartTime -End $EndTime).TotalMinutes
-
 # END BUILD
 
 ## Wrap it up
-Write-Host "[$BuildID] - $(Get-date) - $Name is now ready"
 Write-Host "[$BuildID] - $(Get-date) - Credentials: $UserName\$AdminPassword" -ForegroundColor Yellow
-Write-Host "[$BuildID] - $(Get-date) - Build End" -ForegroundColor Yellow
-Write-Host "[$BuildID] - $(Get-date) - Completed in $TotalTime Minutes" -ForegroundColor Green
+Write-Host "[$BuildID] - $(Get-date) - $Name is now ready" -ForegroundColor Green
