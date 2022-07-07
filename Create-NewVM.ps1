@@ -152,7 +152,7 @@ Write-Host "[$BuildID] - $(Get-date) - Mixing $Name with $WindowsEdition" -Foreg
 . .\Convert-WindowsImage.ps1
 
 # Compile Image
-Convert-WindowsImage -SourcePath $WindowsISO -Edition $WindowsEdition -TempDirectory $TempDirectory -UnattendPath $UnattendPath -SizeBytes $Storage -DiskLayout UEFI -VHDPath $VHDPath -VHDFormat VHDX | Out-Null
+Convert-WindowsImage -SourcePath $WindowsISO -Edition $WindowsEdition -TempDirectory $TempDirectory -UnattendPath $UnattendPath -SizeBytes $Storage -DiskLayout UEFI -VHDPath $VHDPath -VHDFormat VHDX -RemoteDesktopEnable
 
 # Setup new VM
 $SetupVM = New-VM -Name $Name -Generation 2 -MemoryStartupBytes $Memory -VHDPath $VHDPath -SwitchName $SwitchName
@@ -180,15 +180,8 @@ Invoke-Command -Session $StartSession -ScriptBlock {
     Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1'))
 } | Out-Null
 
-# Setup RDP for Host Management if Desktop
+# Upgrade OS from Eval to Full using KMS Key
 if ($WindowsEdition -match "Desktop") {
-    Write-Host "[$BuildID] - $(Get-date) - Enabling RDP on $Name" -ForegroundColor Yellow
-    Invoke-Command -Session $StartSession -ScriptBlock {
-        Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0
-        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-    }
-
-    # Upgrade OS from Eval to Full using KMS Key
     Write-Host "[$BuildID] - $(Get-date) - Converting Windows Server Evaluation to Full" -ForegroundColor Yellow
     Invoke-Command -Session $StartSession -ScriptBlock {
         dism /online /Set-Edition:ServerDatacenter /ProductKey:WX4NM-KYWYW-QJJR4-XV3QB-6VM33 /AcceptEula /Quiet
@@ -196,8 +189,6 @@ if ($WindowsEdition -match "Desktop") {
     
 }
 else {
- 
-    # Upgrade OS from Eval to Full using KMS Key
     Write-Host "[$BuildID] - $(Get-date) - Converting Windows Server Evaluation to Full" -ForegroundColor Yellow
     Invoke-Command -Session $StartSession -ScriptBlock {
         dism /online /Set-Edition:ServerDatacenterCor /ProductKey:WX4NM-KYWYW-QJJR4-XV3QB-6VM33 /AcceptEula /Quiet
@@ -208,7 +199,7 @@ else {
 # Create new session after reboot and continue
 Wait-VM -Name $Name -For Heartbeat
 do {
-    Start-Sleep -Seconds 30
+    Start-Sleep -Seconds 15
     $FinalSession = New-PSSession -VMName $Name -Credential $Credential -ErrorAction SilentlyContinue
 } until ($FinalSession.State -eq "Opened")
 
