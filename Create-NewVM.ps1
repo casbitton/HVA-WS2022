@@ -174,6 +174,14 @@ do {
 # Connect to New VM and enable Remote Management
 Write-Host "[$BuildID] - $(Get-date) - Setting up $Name" -ForegroundColor Yellow
 
+# Performance Tuning and Initial Setup
+Invoke-Command -Session $StartSession -ScriptBlock {
+    # Disable Realtime Antivirus monitoring
+    Set-MpPreference -DisableRealtimeMonitoring $true
+    # Set High performance Power Plan
+    powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+}
+
 # Setup Ansible for Host Management
 Write-Host "[$BuildID] - $(Get-date) - Enabling Ansible Management on $Name" -ForegroundColor Yellow
 Invoke-Command -Session $StartSession -ScriptBlock {
@@ -212,16 +220,6 @@ Invoke-Command -Session $FinalSession -ScriptBlock {
     # Return activation state
     cscript.exe $env:SystemRoot\System32\slmgr.vbs /dli
 } | Out-Null
-
-# Disable Realtime Antivirus monitoring, Clean install
-Write-Host "[$BuildID] - $(Get-date) - Cleaning up $Name" -ForegroundColor Yellow
-Invoke-Command -Session $FinalSession -ScriptBlock {
-    # Disable realtime monitoring
-    Set-MpPreference -DisableRealtimeMonitoring $true
-
-    # Clean up OS
-    dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Quiet
-}
 
 # Waiting for Heartbeat prior to finish
 Wait-VM -Name $Name -For Heartbeat
