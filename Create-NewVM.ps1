@@ -228,7 +228,7 @@ Wait-VM -Name $Name -For Heartbeat
 
 ## End Time
 $EndTime = Get-Date
-$TotalTime = (New-TimeSpan -Start $StartTime -End $EndTime).Minutes
+$TotalTime = (New-TimeSpan -Start $StartTime -End $EndTime).TotalMinutes
 
 # END BUILD
 
