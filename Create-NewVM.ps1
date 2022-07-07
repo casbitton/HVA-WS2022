@@ -152,7 +152,7 @@ Write-Host "[$BuildID] - $(Get-date) - Mixing $Name with $WindowsEdition" -Foreg
 . .\Convert-WindowsImage.ps1
 
 # Compile Image
-Convert-WindowsImage -SourcePath $WindowsISO -Edition $WindowsEdition -TempDirectory $TempDirectory -UnattendPath $UnattendPath -SizeBytes $Storage -DiskLayout UEFI -VHDPath $VHDPath -VHDFormat VHDX
+Convert-WindowsImage -SourcePath $WindowsISO -Edition $WindowsEdition -TempDirectory $TempDirectory -UnattendPath $UnattendPath -SizeBytes $Storage -DiskLayout UEFI -VHDPath $VHDPath -VHDFormat VHDX | Out-Null
 
 # Setup new VM
 $SetupVM = New-VM -Name $Name -Generation 2 -MemoryStartupBytes $Memory -VHDPath $VHDPath -SwitchName $SwitchName
@@ -178,7 +178,7 @@ Write-Host "[$BuildID] - $(Get-date) - Setting up $Name" -ForegroundColor Yellow
 Write-Host "[$BuildID] - $(Get-date) - Enabling Ansible Management on $Name" -ForegroundColor Yellow
 Invoke-Command -Session $StartSession -ScriptBlock {
     Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1'))
-}
+} | Out-Null
 
 # Setup RDP for Host Management if Desktop
 if ($WindowsEdition -match "Desktop") {
@@ -220,7 +220,7 @@ Invoke-Command -Session $FinalSession -ScriptBlock {
     cscript.exe $env:SystemRoot\System32\slmgr.vbs /ato
     # Return activation state
     cscript.exe $env:SystemRoot\System32\slmgr.vbs /dli
-}
+} | Out-Null
 
 # Disable Realtime Antivirus monitoring, Clean install
 Write-Host "[$BuildID] - $(Get-date) - Cleaning up $Name" -ForegroundColor Yellow
